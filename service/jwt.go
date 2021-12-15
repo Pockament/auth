@@ -15,7 +15,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-type JWTOption struct {
+type JWTPayloadData struct {
 	Iss string
 	Sub string
 	Aud string
@@ -25,7 +25,7 @@ type JWTOption struct {
 var PrivateKey = os.Getenv("OSHAVERY_PRIVATEKEY_PATH")
 var DomainName = os.Getenv("OSHAVERY_DOMAIN")
 
-func GenJwtToken(option JWTOption) {
+func GenJwtToken(option JWTPayloadData) {
 
 	// 秘密鍵ファイルを読み込む
 	file, err := ioutil.ReadFile(PrivateKey)
