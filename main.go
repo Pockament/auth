@@ -4,8 +4,12 @@ Pockament-auth
 */
 package main
 
-import "github.com/pockament/auth/routers"
+import (
+	"github.com/pockament/auth/repository"
+	"github.com/pockament/auth/routers"
+)
 
 func main() {
+	repository.RepositoryMain()
 	routers.Serve()
 }

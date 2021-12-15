@@ -12,7 +12,7 @@ func Serve() {
 func router(c *gin.Engine) {
 	users := c.Group("/users")
 	{
-		users.POST("/")
+		users.POST("/", CreateUserHandler)
 		users.PATCH("/")
 		users.DELETE("/")
 	}
@@ -28,4 +28,5 @@ func router(c *gin.Engine) {
 		verify.GET("/")
 	}
 
+	c.Run(":3000")
 }
