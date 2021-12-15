@@ -6,6 +6,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/ed25519"
 	"io/ioutil"
+	"os"
 	"time"
 )
 
@@ -14,23 +15,34 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func GenJwtToken() {
+type JWTOption struct {
+	Iss string
+	Sub string
+	Aud string
+	Id  string
+}
+
+var PrivateKey = os.Getenv("OSHAVERY_PRIVATEKEY_PATH")
+var DomainName = os.Getenv("OSHAVERY_DOMAIN")
+
+func GenJwtToken(option JWTOption) {
+
 	// 秘密鍵ファイルを読み込む
-	file, err := ioutil.ReadFile("p.pem")
+	file, err := ioutil.ReadFile(PrivateKey)
 	if err != nil {
 		return
 	}
 
 	// claimを書き込む
 	claims := Claims{
-		"auth.p0at.nanai10a.net",
+		DomainName,
 		jwt.RegisteredClaims{
-			Issuer:    "sign@auth.p0at.nanai10a.net",
-			Subject:   "general",
-			Audience:  []string{"laminne33569"},
+			Issuer:    option.Iss,
+			Subject:   option.Sub,
+			Audience:  []string{option.Aud},
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			ID:        "574c3dc7-94c1-46ee-8b52-b7e6fdcd4e1f",
+			ID:        option.Id,
 		}}
 
 	// Headerとclaimを書き込み
