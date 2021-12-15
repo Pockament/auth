@@ -11,5 +11,5 @@ func Serve() {
 }
 
 func router(c *gin.Engine) {
-	log.Fatalf("Not Inplement")
+	panic("Not Inplement")
 }
