@@ -18,6 +18,12 @@ type User struct {
 	DeletedAt gorm.DeletedAt
 }
 
+type RevokedTokens struct {
+	gorm.Model
+	ID    uuid.UUID `gorm:"primary_key"`
+	Token string    `gorm:"unique"`
+}
+
 var DB = os.Getenv("POCKAMENT_DB_URL")
 
 func RepositoryMain() {
@@ -26,4 +32,5 @@ func RepositoryMain() {
 		panic("DB Connection Failed")
 	}
 	db.AutoMigrate(&User{})
+	db.AutoMigrate(&RevokedTokens{})
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/pockament/auth/repository"
 	"golang.org/x/crypto/ed25519"
 	"io/ioutil"
 	"os"
@@ -84,6 +85,10 @@ func CheckJWTToken(token string) (string, error) {
 	if !parsedToken.Valid {
 		return "", errors.New("token is invalid")
 	}
+	res := repository.IsRevoked(token)
+	if res == true {
+		return "", errors.New("token was revoked")
+	}
 
 	s := strings.Split(parsedToken.Raw, ".")
 	decodeString, err := base64.RawURLEncoding.DecodeString(s[1])
@@ -92,4 +97,13 @@ func CheckJWTToken(token string) (string, error) {
 	}
 	return string(decodeString), nil
 
+}
+
+func RevokeToken(token string) error {
+	_, b := repository.RevokeToken(token)
+	if b == false {
+		return nil
+	} else {
+		return errors.New("failed to revoke token")
+	}
 }
