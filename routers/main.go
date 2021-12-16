@@ -13,7 +13,7 @@ func router(c *gin.Engine) {
 	users := c.Group("/users")
 	{
 		users.POST("/", CreateUserHandler)
-		users.PATCH("/")
+		users.PATCH("/", UpdateUserHander)
 		users.DELETE("/")
 	}
 

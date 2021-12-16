@@ -18,7 +18,7 @@ type User struct {
 	DeletedAt gorm.DeletedAt
 }
 
-var DB = os.Getenv("OSHAVERY_DB_URL")
+var DB = os.Getenv("POCKAMENT_DB_URL")
 
 func RepositoryMain() {
 	db, err := gorm.Open(mysql.Open(DB), &gorm.Config{})

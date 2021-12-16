@@ -2,11 +2,12 @@ package service
 
 import (
 	"encoding/base64"
-	"fmt"
+	"errors"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/ed25519"
 	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -22,15 +23,17 @@ type JWTPayloadData struct {
 	Id  string
 }
 
-var PrivateKey = os.Getenv("OSHAVERY_PRIVATEKEY_PATH")
-var DomainName = os.Getenv("OSHAVERY_DOMAIN")
+var PrivateKey = os.Getenv("POCKAMENT_PRIVATEKEY_PATH")
+var PublicKey = os.Getenv("POCKAMENT_PUBLICKEY_PATH")
+var DomainName = os.Getenv("POCKAMENT_DOMAIN")
+
 
 func GenJwtToken(option JWTPayloadData) {
 
 	// 秘密鍵ファイルを読み込む
 	file, err := ioutil.ReadFile(PrivateKey)
 	if err != nil {
-		return
+		return ""
 	}
 
 	// claimを書き込む
@@ -55,7 +58,39 @@ func GenJwtToken(option JWTPayloadData) {
 	// 署名
 	ss, err := token.SignedString(DecodedKey)
 	if err != nil {
-		return
+		return ""
 	}
-	fmt.Printf("%v\n", ss)
+	return ss
+}
+
+// CheckJWTToken TokenのClaim部分を返す
+func CheckJWTToken(token string) (string, error) {
+	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		pk, err := ioutil.ReadFile(PublicKey)
+		dec, _ := base64.StdEncoding.DecodeString(string(pk))
+		var Pkey ed25519.PublicKey = dec
+		if err != nil {
+			return nil, errors.New("failed to read key")
+		}
+
+		if _, ok := token.Method.(*jwt.SigningMethodEd25519); !ok {
+			err := errors.New("unexpected signing method")
+			return nil, err
+		}
+		return Pkey, nil
+	})
+	if err != nil {
+		return "", err
+	}
+	if !parsedToken.Valid {
+		return "", errors.New("token is invalid")
+	}
+
+	s := strings.Split(parsedToken.Raw, ".")
+	decodeString, err := base64.RawURLEncoding.DecodeString(s[1])
+	if err != nil {
+		return "", err
+	}
+	return string(decodeString), nil
+
 }
