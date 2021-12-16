@@ -16,7 +16,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-type JWTOption struct {
+type JWTPayloadData struct {
 	Iss string
 	Sub string
 	Aud string
@@ -27,7 +27,8 @@ var PrivateKey = os.Getenv("POCKAMENT_PRIVATEKEY_PATH")
 var PublicKey = os.Getenv("POCKAMENT_PUBLICKEY_PATH")
 var DomainName = os.Getenv("POCKAMENT_DOMAIN")
 
-func GenJwtToken(option JWTOption) string {
+
+func GenJwtToken(option JWTPayloadData) {
 
 	// 秘密鍵ファイルを読み込む
 	file, err := ioutil.ReadFile(PrivateKey)
