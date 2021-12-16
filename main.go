@@ -14,7 +14,7 @@ import (
 
 func main() {
 	if os.Args[1] != "test" {
-		token := service.GenJwtToken(service.JWTOption{
+		token := service.GenJwtToken(service.JWTPayloadData{
 			Iss: "lami",
 			Sub: "test",
 			Aud: "aa",

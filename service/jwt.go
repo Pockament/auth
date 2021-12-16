@@ -27,8 +27,7 @@ var PrivateKey = os.Getenv("POCKAMENT_PRIVATEKEY_PATH")
 var PublicKey = os.Getenv("POCKAMENT_PUBLICKEY_PATH")
 var DomainName = os.Getenv("POCKAMENT_DOMAIN")
 
-
-func GenJwtToken(option JWTPayloadData) {
+func GenJwtToken(option JWTPayloadData) string {
 
 	// 秘密鍵ファイルを読み込む
 	file, err := ioutil.ReadFile(PrivateKey)
