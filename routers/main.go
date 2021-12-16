@@ -2,7 +2,6 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"log"
 )
 
 func Serve() {
@@ -11,5 +10,23 @@ func Serve() {
 }
 
 func router(c *gin.Engine) {
-	panic("Not Inplement")
+	users := c.Group("/users")
+	{
+		users.POST("/", CreateUserHandler)
+		users.PATCH("/")
+		users.DELETE("/")
+	}
+
+	tokens := c.Group("/tokens")
+	{
+		tokens.POST("/")
+		tokens.DELETE("/")
+	}
+
+	verify := c.Group("/")
+	{
+		verify.GET("/")
+	}
+
+	c.Run(":3000")
 }
